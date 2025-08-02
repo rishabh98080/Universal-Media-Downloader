@@ -1,0 +1,15 @@
+html {
+  scroll-behavior: smooth;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #F0F2F5; /* Applying the main app background color to the entire body */
+  display: flex;
+  flex-direction: column;
+}

@@ -1,0 +1,780 @@
+/* Ensure HTML and Body take full viewport height and remove default margins/padding */
+
+/* General App Styles */
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure app takes full viewport height */
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  color: #333333;
+}
+
+.app-main {
+  flex: 1; /* Allows the main content to grow and push the footer down */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+
+/* Header Styles */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2.5rem;
+  background: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid #EAEAEA;
+  width: 100%;
+  box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-left {
+  flex: 1;
+}
+
+.header-donate-button {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: #fff;
+  background: linear-gradient(45deg, #fc63ff, #d15353);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.header-donate-button:hover {
+  background: linear-gradient(45deg, #d15353, #fc63ff);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.app-nav {
+  display: flex;
+  gap: 2rem;
+}
+
+.app-nav a {
+  text-decoration: none;
+  color: #555555;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 2px solid transparent;
+  transition: color 0.3s, border-color 0.3s;
+}
+
+.app-nav a:hover,
+.app-nav a.active {
+  cursor: pointer;
+  color: #6C63FF;
+  border-bottom-color: #6C63FF;
+}
+
+
+/* Footer Styles */
+.app-footer {
+  padding: 2rem;
+  background: #333333;
+  color: #E0E0E0;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: auto; /* Pushes footer to the bottom */
+}
+
+.app-footer p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+.app-footer .disclaimer {
+  font-size: 0.8rem;
+  color: #A0A0A0;
+  max-width: 800px;
+  margin: 1rem auto 0 auto;
+  line-height: 1.5;
+}
+
+
+h1 {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  color: #1A1A1A;
+  font-size: 2.8rem;
+  letter-spacing: -0.03em;
+  width: 100%;
+  font-style: italic;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.section { /* Base style for all content sections */
+  max-width: 60%; /* Default max-width for larger screens */
+  width: 100%; /* Ensures it takes full width up to max-width */
+  background: #FFFFFF;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  padding: 2.5rem;
+  margin-bottom: 2.5rem;
+  border: 1px solid #E0E0E0;
+  box-sizing: border-box;
+}
+
+.section h2 {
+  margin-top: 0;
+  margin-bottom: 1.8rem;
+  color: #3D3D3D;
+  font-size: 1.8rem;
+  border-bottom: 1px solid #EAEAEA;
+  padding-bottom: 0.8rem;
+  font-weight: 500;
+}
+
+/* Form and Input Styles */
+.video-input-container, .url-form {
+  display: flex;
+  gap: 1.2rem;
+  margin-bottom: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.video-url-input, .url-form input {
+  flex: 1;
+  min-width: 250px;
+  padding: 1rem;
+  font-size: 1.1rem;
+  background: #F8F8F8;
+  color: #333333;
+  border: 1px solid #D0D0D0;
+  border-radius: 10px;
+  transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+}
+
+.video-url-input:focus, .url-form input:focus {
+  outline: none;
+  border-color: #6C63FF;
+  box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.2);
+  background: #FFFFFF;
+}
+
+.preview-btn, .url-form button, .instagram-download-btn {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease-out, transform 0.2s ease-out, box-shadow 0.3s ease-out;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+.preview-btn {
+  background: linear-gradient(45deg, #FF8C00, #FFA040);
+  box-shadow: 0 4px 15px rgba(255, 140, 0, 0.2);
+}
+.preview-btn:hover {
+  background: linear-gradient(45deg, #F57C00, #FF8C00);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 140, 0, 0.3);
+}
+
+.instagram-download-btn {
+  background: linear-gradient(45deg, #E1306C, #C13584);
+  box-shadow: 0 4px 15px rgba(225, 48, 108, 0.2);
+}
+.instagram-download-btn:hover {
+  background: linear-gradient(45deg, #C13584, #E1306C);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(225, 48, 108, 0.3);
+}
+
+.url-form button {
+  background: linear-gradient(45deg, #6C63FF, #5B53D1);
+  box-shadow: 0 4px 15px rgba(108, 99, 255, 0.2);
+}
+.url-form button:hover {
+  background: linear-gradient(45deg, #5B53D1, #6C63FF);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(108, 99, 255, 0.3);
+}
+
+.preview-btn:disabled, .url-form button:disabled, .instagram-download-btn:disabled {
+  background: #D0D0D0;
+  color: #A0A0A0;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Video Preview & Format List Styles */
+.video-preview-list {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-top: 2rem;
+  border: 1px solid #E0E0E0;
+  animation: fadeIn 0.5s ease-in;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.video-header {
+  display: flex;
+  gap: 1.8rem;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #EAEAEA;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.video-header-thumbnail {
+  width: 180px;
+  height: auto;
+  border-radius: 10px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.video-header-details {
+  flex: 1;
+  min-width: 250px;
+  text-align: left;
+}
+
+.video-header-details h3 {
+  margin: 0 0 0.8rem 0;
+  color: #222222;
+  font-size: 1.6rem;
+}
+
+.video-header-details p {
+  margin: 0;
+  color: #555555;
+  font-size: 1rem;
+}
+
+.video-preview-list h4 {
+  margin: 0 0 1.5rem 0;
+  color: #222222;
+  font-size: 1.3rem;
+}
+
+.format-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.format-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem 0.8rem;
+  border-bottom: 1px solid #F0F0F0;
+  color: #333333;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.format-item:last-child {
+  border-bottom: none;
+}
+
+.format-note {
+  font-weight: 600;
+  flex: 1;
+  min-width: 80px;
+}
+
+.format-ext, .format-size {
+  color: #666666;
+  margin-right: 2rem;
+  min-width: 60px;
+  text-align: right;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.download-btn-small {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+  background: linear-gradient(45deg, #28A745, #34C759);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease-out, transform 0.2s ease-out, box-shadow 0.3s ease-out;
+  box-shadow: 0 3px 10px rgba(40, 167, 69, 0.2);
+  flex-shrink: 0;
+}
+
+.download-btn-small:hover {
+  background: linear-gradient(45deg, #34C759, #28A745);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.download-btn-small:disabled {
+  background: #D0D0D0;
+  color: #A0A0A0;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+
+/* Generic Media Scraper List */
+.media-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 2rem;
+  width: 100%;
+  max-width: 60%;
+}
+
+.media-item {
+  background: #FFFFFF;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  border: 1px solid #E0E0E0;
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+.media-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.media-thumbnail-container {
+    height: 140px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.media-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.media-icon-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    height: 100%;
+    width: 100%;
+}
+
+.file-icon {
+    font-size: 3rem;
+}
+
+.file-type-label {
+    margin-top: 0.5rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.media-item-info {
+  word-wrap: break-word;
+  width: 100%;
+  font-size: 0.9rem;
+  color: #333333;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.media-item-download-btn {
+  background: linear-gradient(45deg, #6C63FF, #5B53D1);
+  color: #fff;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  border-radius: 8px;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.3s ease-out, transform 0.2s ease-out, box-shadow 0.3s ease-out;
+  margin-top: 1.2rem;
+  box-shadow: 0 4px 15px rgba(108, 99, 255, 0.2);
+  box-sizing: border-box;
+}
+
+.media-item-download-btn:hover {
+  background: linear-gradient(45deg, #5B53D1, #6C63FF);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(108, 99, 255, 0.3);
+}
+
+
+/* Notification Styles */
+.error, .success, .loading {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding: 1.2rem;
+  border-radius: 10px;
+  font-weight: 500;
+  animation: fadeIn 0.5s ease-in;
+  font-size: 1.1rem;
+  width: 100%;
+  max-width: 60%;
+  box-sizing: border-box;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.error {
+  color: #D32F2F;
+  background: rgba(255, 235, 238, 0.8);
+  border: 1px solid #EF9A9A;
+}
+
+.success {
+  color: #388E3C;
+  background: rgba(232, 245, 233, 0.8);
+  border: 1px solid #A5D6A7;
+}
+
+.loading {
+  color: #1976D2;
+  background: rgba(227, 242, 253, 0.8);
+  border: 1px solid #90CAF9;
+}
+
+h5 {
+  color: #666666;
+  font-size: 0.95rem;
+  font-style: italic;
+  margin-top: 0.8rem;
+}
+
+/* Donation Section Styles */
+.donate-section {
+  max-width: 60%;
+  width: 100%;
+  background: #FFFFFF;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  padding: 2.5rem;
+  margin-top: 2.5rem;
+  text-align: center;
+  border: 1px solid #E0E0E0;
+}
+
+.donate-section h2 {
+  color: #3D3D3D;
+  margin-bottom: 1.5rem;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.donate-buttons-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.donate-button {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease-out;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 180px;
+}
+
+.donate-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.paypal-button {
+  background: linear-gradient(45deg, #0070BA, #005EA6);
+  box-shadow: 0 4px 15px rgba(0, 112, 186, 0.2);
+}
+.paypal-button:hover {
+  background: linear-gradient(45deg, #005EA6, #0070BA);
+}
+
+.upi-button {
+  background: linear-gradient(45deg, #4CAF50, #388E3C);
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+}
+.upi-button:hover {
+  background: linear-gradient(45deg, #388E3C, #4CAF50);
+}
+
+.donation-details-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 60%;
+  margin: 0 auto 2.5rem auto;
+  min-height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.donation-detail-section {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  padding: 3rem 2.5rem;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+  box-sizing: border-box;
+  margin-bottom: 0;
+  background: #FFFFFF;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  border: 1px solid #E0E0E0;
+}
+
+.donation-detail-section.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+
+.qr-code-image {
+  max-width: 250px;
+  height: auto;
+  margin: 1.5rem auto;
+  border: 1px solid #EAEAEA;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.paypal-button-secondary {
+  background: linear-gradient(45deg, #0070BA, #005EA6);
+  box-shadow: 0 4px 15px rgba(0, 112, 186, 0.2);
+  padding: 0.8rem 1.8rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  color: #fff;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease-out;
+  margin-top: 1.5rem;
+}
+
+.paypal-button-secondary:hover {
+  background: linear-gradient(45deg, #005EA6, #0070BA);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .app-header {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+  }
+  
+  .app-nav {
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .app-main {
+    padding: 1.5rem;
+  }
+
+  h1 {
+    font-size: 2.2rem;
+  }
+
+  .section, .media-list, .error, .success, .loading, .donation-details-wrapper {
+    max-width: 90%;
+  }
+
+  .section {
+    padding: 1.8rem;
+  }
+
+  .section h2 {
+    font-size: 1.5rem;
+  }
+
+  .video-input-container, .url-form {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .video-url-input, .url-form input {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .preview-btn, .url-form button, .instagram-download-btn {
+    width: 100%;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .video-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .video-header-details {
+    min-width: unset;
+    text-align: center;
+  }
+
+  .video-header-thumbnail {
+    width: 150px;
+  }
+
+  .format-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+
+  .format-ext, .format-size {
+    margin-right: 0;
+    text-align: left;
+  }
+
+  .media-list {
+    grid-template-columns: 1fr;
+  }
+
+  .media-item {
+    height: auto;
+  }
+
+  .media-item-download-btn {
+    width: 100%;
+  }
+
+  .error, .success, .loading {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+
+  .donate-section {
+    padding: 1.8rem;
+  }
+
+  .donate-button {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .donation-details-wrapper {
+    min-height: 350px;
+  }
+
+  .donation-detail-section {
+    padding: 2rem 1.5rem;
+  }
+
+  .qr-code-image {
+    max-width: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-header {
+    padding: 1rem 0.5rem;
+  }
+
+  .app-nav a {
+    font-size: 0.9rem;
+    gap: 0.8rem;
+  }
+
+  .header-donate-button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+
+  .app-main {
+    padding: 1rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  .section, .media-list, .error, .success, .loading, .donation-details-wrapper {
+    max-width: 95%;
+  }
+  
+  .section {
+    padding: 1.2rem;
+  }
+
+  .donate-section {
+    padding: 1.2rem;
+  }
+
+  .donation-details-wrapper {
+    min-height: 300px;
+  }
+
+  .donation-detail-section {
+    padding: 1.5rem 1rem;
+  }
+
+  .qr-code-image {
+    max-width: 180px;
+  }
+}
