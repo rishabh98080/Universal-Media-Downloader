@@ -2,15 +2,10 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import qrcodeImage from './qrcode.jpg'; // Make sure you have this image in your src folder
 
-// This will be set by your .env file
 const BACKEND_URL = 'http://localhost:8001';
 
-// --- DEBUGGING LINE ---
-// Let's see what URL the app is actually using.
 console.log("Attempting to use backend URL:", BACKEND_URL);
 
-
-// A reusable component to display the list of video formats
 const FormatList = ({ videoInfo, originalUrl, onDownload, downloadingFormatId }) => (
   <div className="video-preview-list">
     <div className="video-header">
@@ -31,7 +26,7 @@ const FormatList = ({ videoInfo, originalUrl, onDownload, downloadingFormatId })
           <span className="format-ext">{format.ext}</span>
           <span className="format-size">{format.filesize_str || 'N/A'}</span>
           <button
-            onClick={() => onDownload(originalUrl, format.format_id)}
+            onClick={() => onDownload(originalUrl, format)}
             disabled={downloadingFormatId === format.format_id}
             className="download-btn-small"
           >
@@ -43,7 +38,6 @@ const FormatList = ({ videoInfo, originalUrl, onDownload, downloadingFormatId })
   </div>
 );
 
-// Placeholder components for new pages
 const AboutUs = () => (
     <div className="section" style={{textAlign: 'left', lineHeight: '1.8'}}>
         <h2>About Universal Media Downloader</h2>
@@ -116,11 +110,9 @@ function App() {
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
-    // --- NEW: Check if the backend URL is set ---
     if (!BACKEND_URL) {
       setError("Configuration Error: The backend URL is not set. Please check your .env file and restart the server.");
     }
-
     const titles = {
       home: 'Universal Media Downloader | Free Video & File Scraper',
       about: 'About Us | Universal Media Downloader',
@@ -156,47 +148,45 @@ function App() {
     setVideoLoading(false);
   };
   
-  const handleFormatDownload = async (urlToDownload, formatId) => {
-    if (!BACKEND_URL) return;
-    setDownloadingFormatId(formatId);
+// In App.jsx
+// --- FINAL, DEFINITIVE VERSION ---
+const handleFormatDownload = (urlToDownload, format) => {
+    if (!BACKEND_URL || !videoInfo) return;
+
+    console.log("Initiating direct form submission for download...");
+    setDownloadingFormatId(format.format_id);
     setError('');
-    setSuccess('');
-    try {
-      const res = await fetch(`${BACKEND_URL}/api/download`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: urlToDownload, format_id: formatId }),
-      });
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.detail || 'Failed to download video');
-      }
-      
-      const contentDisposition = res.headers.get('Content-Disposition');
-      let filename = 'video.mp4';
-      if (contentDisposition) {
-        const match = contentDisposition.match(/filename="(.+?)"/);
-        if (match) filename = match[1];
-      }
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `${BACKEND_URL}/api/download`;
+    // The "target = '_blank'" line has been removed.
 
-      const blob = await res.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = downloadUrl;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(downloadUrl);
-      document.body.removeChild(a);
+    const data = {
+        url: urlToDownload,
+        format_id: format.format_id,
+        title: videoInfo.title,
+        extension: format.ext
+    };
 
-      setSuccess(`Download started!`);
-      setTimeout(() => setSuccess(''), 5000);
-    } catch (err) {
-      setError(err.message);
+    for (const key in data) {
+        if (data.hasOwnProperty(key)) {
+            const hiddenField = document.createElement('input');
+            hiddenField.type = 'hidden';
+            hiddenField.name = key;
+            hiddenField.value = data[key];
+            form.appendChild(hiddenField);
+        }
     }
-    setDownloadingFormatId(null);
-  };
+
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+
+    setTimeout(() => {
+        setDownloadingFormatId(null);
+    }, 2000);
+};
 
   const fetchMedia = async (e) => {
     e.preventDefault();

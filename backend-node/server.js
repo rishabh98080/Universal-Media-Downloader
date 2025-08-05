@@ -1,5 +1,6 @@
 // server.js
 // DEFINITIVE VERSION - Rewritten to use yt-dlp-wrap and Puppeteer for best results.
+// FINAL FIX: Prioritizes instant download start over pre-fetching file size.
 
 // --- Import necessary libraries ---
 const express = require('express');
@@ -32,6 +33,8 @@ const ytDlpWrap = new YTDlpWrap(ytDlpPath);
 app.use(cors());
 app.use(express.json());
 
+app.use(express.urlencoded({ extended: true }));
+
 // --- Helper function to format file size ---
 const formatBytes = (bytes, decimals = 2) => {
     if (!bytes || bytes === 0) return '0 Bytes';
@@ -44,6 +47,7 @@ const formatBytes = (bytes, decimals = 2) => {
 
 // --- API Endpoints ---
 
+// ✅ NO CHANGES HERE: This endpoint is for displaying info and is fine.
 app.post('/api/video-info', async (req, res) => {
     const videoUrl = req.body.url;
     if (!videoUrl) {
@@ -66,24 +70,59 @@ app.post('/api/video-info', async (req, res) => {
     }
 });
 
-app.post('/api/download', async (req, res) => {
-    const { url: videoUrl, format_id: formatId } = req.body;
-    if (!videoUrl || !formatId) {
-        return res.status(400).json({ detail: 'Missing URL or format ID.' });
+
+// 🔥 --- REVISED AND FINAL DOWNLOAD ENDPOINT --- 🔥
+// In server.js
+
+// 🔥 --- FINAL, ROBUST DOWNLOAD ENDPOINT --- 🔥
+app.post('/api/download', (req, res) => {
+    const { url: videoUrl, format_id: formatId, title, extension } = req.body;
+
+    if (!videoUrl || !formatId || !title || !extension) {
+        // This check is still important.
+        return res.status(400).json({ detail: 'Missing URL, format ID, title, or extension.' });
     }
+
     try {
-        console.log(`Starting download for: ${videoUrl} with format: ${formatId}`);
-        const metadata = await ytDlpWrap.getVideoInfo(videoUrl);
-        const filename = `${metadata.title.replace(/[<>:"/\\|?*]+/g, '_')}.${metadata.ext}`;
-        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        // --- NEW, CORRECTED HEADER LOGIC ---
+
+        // 1. Sanitize the title for file systems (still a good idea)
+        const sanitizedTitle = title.replace(/[<>:"/\\|?*]+/g, '_').trim();
+
+        // 2. Create a simple, ASCII-only fallback filename.
+        //    This replaces any non-standard characters with an underscore.
+        const asciiFilename = `${sanitizedTitle.replace(/[^\x00-\x7F]/g, "_")}.${extension}`;
+
+        // 3. Create the full UTF-8 filename.
+        const utf8Filename = `${sanitizedTitle}.${extension}`;
+        
+        console.log(`Preparing download for: ${utf8Filename}`);
+
+        // 4. Set both headers. Modern browsers will prioritize 'filename*'.
+        //    This is the standard way to handle special characters in downloads.
+        res.setHeader('Content-Disposition', `attachment; filename="${asciiFilename}"; filename*=UTF-8''${encodeURIComponent(utf8Filename)}`);
+        res.setHeader('Content-Type', 'application/octet-stream');
+
+        // --- Stream logic remains the same ---
         const videoStream = ytDlpWrap.execStream([videoUrl, '-f', formatId]);
+
         videoStream.pipe(res);
+
+        videoStream.on('error', (streamErr) => {
+            console.error('Error during video stream:', streamErr.message);
+            res.end();
+        });
+
     } catch (err) {
-        console.error('Error downloading video with yt-dlp:', err.message);
-        res.status(500).json({ detail: 'Failed to download video. Please try another format or video.' });
+        console.error('Error initiating download stream:', err.message);
+        if (!res.headersSent) {
+            res.status(500).json({ detail: 'Failed to start download stream.' });
+        }
     }
 });
 
+
+// ✅ NO CHANGES HERE: Scraper behavior is correct.
 app.post('/api/scrape-page', async (req, res) => {
     const pageUrl = req.body.url;
     if (!pageUrl) {
@@ -109,8 +148,8 @@ app.post('/api/scrape-page', async (req, res) => {
             document.querySelectorAll('a, img, audio, video, source').forEach(el => {
                 const src = el.href || el.src;
                 if (src) {
-                    const extensionMatch = mediaExtensions.find(ext => src.toLowerCase().includes(ext));
-                    if (extensionMatch) {
+                    const hasMediaExtension = mediaExtensions.some(ext => src.toLowerCase().includes(ext));
+                    if (hasMediaExtension) {
                         try {
                             const absoluteSrc = resolveUrl(src);
                             const filename = absoluteSrc.split('/').pop().split('?')[0];
