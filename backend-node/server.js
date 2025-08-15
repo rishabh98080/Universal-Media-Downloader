@@ -30,7 +30,7 @@ if (!fs.existsSync(ytDlpPath)) {
 const ytDlpWrap = new YTDlpWrap(ytDlpPath);
 // --- End of yt-dlp setup ---
 const corsOptions = {
-  origin: 'https://universal-media-downloader-3f3f.vercel.app'
+  origin: 'https://universal-media-downloader.web.app/'
 };
 
 app.use(cors(corsOptions));
