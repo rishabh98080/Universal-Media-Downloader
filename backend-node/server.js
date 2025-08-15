@@ -12,7 +12,7 @@ const fs = require('fs');
 const os = require('os');
 
 const app = express();
-const PORT = 8001; // Using port 8001 to avoid conflicts
+const PORT = process.env.PORT || 8001; // Using port 8001 to avoid conflicts
 
 // --- CRITICAL: yt-dlp setup and validation ---
 const platform = os.platform();
@@ -29,8 +29,11 @@ if (!fs.existsSync(ytDlpPath)) {
 
 const ytDlpWrap = new YTDlpWrap(ytDlpPath);
 // --- End of yt-dlp setup ---
+const corsOptions = {
+  origin: 'https://universal-media-downloader-3f3f.vercel.app'
+};
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));

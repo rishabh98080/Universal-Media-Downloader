@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import qrcodeImage from './qrcode.jpg'; // Make sure you have this image in your src folder
 
-const BACKEND_URL = 'http://localhost:8001';
+const BACKEND_URL = 'https://universal-media-downloader-3f3f.vercel.app';
 
 console.log("Attempting to use backend URL:", BACKEND_URL);
 
